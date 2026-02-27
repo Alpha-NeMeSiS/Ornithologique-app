@@ -97,3 +97,194 @@ CREATE TABLE ESPECE_PAYS (
         FOREIGN KEY (id_pays)
         REFERENCES PAYS(id_pays)
 );
+/* =========================
+   1) TAXONOMIE
+   ========================= */
+
+INSERT INTO TAXONOMIE (ordre, famille, genre) VALUES
+('Passeriformes', 'Turdidae', 'Turdus'),
+('Passeriformes', 'Passeridae', 'Passer'),
+('Passeriformes', 'Muscicapidae', 'Erithacus'),
+('Passeriformes', 'Paridae', 'Cyanistes');
+
+
+/* =========================
+   2) AUTEUR
+   ========================= */
+
+INSERT INTO AUTEUR (nom_auteur, prenom_auteur) VALUES
+('Sharp', 'Charles J.'),
+('Friel', 'David'),
+('Viatour', 'Luc');
+
+
+/* =========================
+   3) PAYS
+   ========================= */
+
+INSERT INTO PAYS (nom_pays, code_iso) VALUES
+('Royaume-Uni', 'GBR'),
+('France', 'FRA'),
+('Espagne', 'ESP'),
+('Allemagne', 'DEU');
+
+
+/* =========================
+   4) ESPECE
+   ========================= */
+
+INSERT INTO ESPECE (
+    nom_commun,
+    nom_scientifique,
+    description,
+    taille_cm,
+    poids_min_g,
+    poids_max_g,
+    longevite_ans,
+    nombre_individus,
+    id_taxonomie
+)
+VALUES
+(
+    'Merle noir',
+    'Turdus merula',
+    'Passereau commun des jardins, parcs, haies et boisements. Le mâle est noir avec un bec jaune-orangé.',
+    24.5,
+    80,
+    100,
+    3,
+    NULL,
+    (SELECT id_taxonomie FROM TAXONOMIE
+     WHERE ordre = 'Passeriformes' AND famille = 'Turdidae' AND genre = 'Turdus')
+),
+(
+    'Moineau domestique',
+    'Passer domesticus',
+    'Petit passereau trapu très lié aux zones urbaines, aux bâtiments et aux espaces agricoles proches de l''homme.',
+    14.5,
+    24,
+    38,
+    3,
+    NULL,
+    (SELECT id_taxonomie FROM TAXONOMIE
+     WHERE ordre = 'Passeriformes' AND famille = 'Passeridae' AND genre = 'Passer')
+),
+(
+    'Rouge-gorge familier',
+    'Erithacus rubecula',
+    'Petit passereau à poitrine rouge, fréquent dans les jardins, parcs et bois ombragés.',
+    14.0,
+    14,
+    21,
+    2,
+    NULL,
+    (SELECT id_taxonomie FROM TAXONOMIE
+     WHERE ordre = 'Passeriformes' AND famille = 'Muscicapidae' AND genre = 'Erithacus')
+),
+(
+    'Mésange bleue',
+    'Cyanistes caeruleus',
+    'Petit passereau coloré bleu, jaune, blanc et vert, commun dans les jardins, parcs et bois.',
+    12.0,
+    11,
+    11,
+    3,
+    NULL,
+    (SELECT id_taxonomie FROM TAXONOMIE
+     WHERE ordre = 'Passeriformes' AND famille = 'Paridae' AND genre = 'Cyanistes')
+);
+
+
+/* =========================
+   5) IMAGE
+   chemin_image = URL de page Commons
+   (tu peux remplacer plus tard
+   par un chemin local /uploads/...)
+   ========================= */
+
+INSERT INTO IMAGE (
+    chemin_image,
+    date_ajout,
+    description_image,
+    id_espece,
+    id_auteur
+)
+VALUES
+(
+    'https://commons.wikimedia.org/wiki/File%3ACommon_Blackbird_%28turdus_merula%29.jpg',
+    DATE '2014-03-29',
+    'Photo d''un merle noir adulte mâle.',
+    (SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Turdus merula'),
+    (SELECT id_auteur FROM AUTEUR WHERE nom_auteur = 'Sharp' AND prenom_auteur = 'Charles J.')
+),
+(
+    'https://commons.wikimedia.org/wiki/File%3APasser_domesticus_-England_-male.jpg',
+    DATE '2008-05-09',
+    'Photo d''un moineau domestique mâle.',
+    (SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Passer domesticus'),
+    (SELECT id_auteur FROM AUTEUR WHERE nom_auteur = 'Friel' AND prenom_auteur = 'David')
+),
+(
+    'https://commons.wikimedia.org/wiki/File%3AErithacus_rubecula.jpg',
+    DATE '2008-04-15',
+    'Photo d''un rouge-gorge familier.',
+    (SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Erithacus rubecula'),
+    (SELECT id_auteur FROM AUTEUR WHERE nom_auteur = 'Friel' AND prenom_auteur = 'David')
+),
+(
+    'https://commons.wikimedia.org/wiki/File%3ACyanistes_caeruleus_Luc_Viatour.jpg',
+    DATE '2008-10-04',
+    'Photo d''une mésange bleue.',
+    (SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Cyanistes caeruleus'),
+    (SELECT id_auteur FROM AUTEUR WHERE nom_auteur = 'Viatour' AND prenom_auteur = 'Luc')
+);
+
+
+/* =========================
+   6) ESPECE_PAYS
+   Jeu de données seed :
+   pays d''Europe occidentale cohérents
+   avec la répartition générale des espèces
+   ========================= */
+
+INSERT INTO ESPECE_PAYS (id_espece, id_pays)
+VALUES
+-- Merle noir
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Turdus merula'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'Royaume-Uni')),
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Turdus merula'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'France')),
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Turdus merula'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'Espagne')),
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Turdus merula'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'Allemagne')),
+
+-- Moineau domestique
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Passer domesticus'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'Royaume-Uni')),
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Passer domesticus'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'France')),
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Passer domesticus'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'Espagne')),
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Passer domesticus'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'Allemagne')),
+
+-- Rouge-gorge familier
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Erithacus rubecula'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'Royaume-Uni')),
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Erithacus rubecula'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'France')),
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Erithacus rubecula'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'Espagne')),
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Erithacus rubecula'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'Allemagne')),
+
+-- Mésange bleue
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Cyanistes caeruleus'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'Royaume-Uni')),
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Cyanistes caeruleus'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'France')),
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Cyanistes caeruleus'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'Espagne')),
+((SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Cyanistes caeruleus'),
+ (SELECT id_pays FROM PAYS WHERE nom_pays = 'Allemagne'));
