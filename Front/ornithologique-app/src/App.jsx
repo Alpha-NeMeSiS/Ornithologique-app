@@ -219,6 +219,7 @@ function App() {
     }
   }
 
+function App() {
   return (
     <div className="app-shell">
       <header className="topbar">
