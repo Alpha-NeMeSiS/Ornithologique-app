@@ -21,6 +21,7 @@ function App() {
     return <DetectionPage />
   }
 
+function App() {
   return (
     <div className="app-layout">
       <Navbar currentPage={currentPage} onChangePage={setCurrentPage} />
