@@ -1,0 +1,58 @@
+.main-navbar {
+  height: 72px;
+  padding: 0 28px;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e8ec;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.main-navbar .brand {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.main-navbar nav {
+  display: flex;
+  gap: 8px;
+}
+
+.main-navbar nav button {
+  border: 0;
+  background: transparent;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #51606b;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.main-navbar nav button.active {
+  background: #ebf8c6;
+  color: #2d4908;
+}
+
+.login-btn {
+  border: 0;
+  border-radius: 8px;
+  background: #22353c;
+  color: #ffffff;
+  padding: 10px 14px;
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .main-navbar {
+    height: auto;
+    padding: 16px;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .main-navbar nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
