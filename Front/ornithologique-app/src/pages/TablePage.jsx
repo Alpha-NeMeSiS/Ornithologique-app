@@ -27,7 +27,8 @@ function TablePage() {
       </div>
 
       <div className="table-wrapper">
-        <table>
+        <div className="table-scroll">
+          <table>
           <thead>
             <tr>
               <th>Name</th>
@@ -52,7 +53,8 @@ function TablePage() {
               </tr>
             ))}
           </tbody>
-        </table>
+          </table>
+        </div>
       </div>
 
       <div className="table-footer">
