@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { speciesCards } from '../data/mockData'
+import { getSpecies } from '../services/api'
 
 function SpeciesListPage() {
   const [speciesList, setSpeciesList] = useState([])
@@ -9,33 +9,19 @@ function SpeciesListPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    async function fetchSpecies() {
+    async function fetchSpeciesList() {
       try {
-        const response = await fetch('/api/species')
-        if (!response.ok) {
-          throw new Error('Impossible de charger les espèces pour le moment.')
-        }
-
-        const data = await response.json()
+        const data = await getSpecies()
         setSpeciesList(data)
-      } catch {
-        setError('API indisponible. Affichage de données de démonstration.')
+      } catch (fetchError) {
+        setError(fetchError.message)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchSpecies()
+    fetchSpeciesList()
   }, [])
-
-  const cardsToDisplay =
-    speciesList.length > 0
-      ? speciesList.map((item) => ({
-          id: item.id_espece,
-          name: item.nom_commun,
-          latin: item.nom_scientifique,
-        }))
-      : speciesCards.map((item, index) => ({ ...item, id: index + 1 }))
 
   return (
     <section className="page-container standard-page">
@@ -67,27 +53,32 @@ function SpeciesListPage() {
         <button type="button" className="pill">
           Oiseaux d&apos;eau
         </button>
-        <button type="button" className="pill">
-          Menacés
-        </button>
       </div>
 
-      <div className="species-grid">
-        {cardsToDisplay.map((bird, index) => (
-          <article key={`${bird.name}-${bird.id}`} className="species-card">
-            <div className="photo-placeholder">Photo {index + 1}</div>
-            <h3>{bird.name}</h3>
-            <p>{bird.latin}</p>
-            <button
-              type="button"
-              className="btn-light full-width"
-              onClick={() => navigate(`/species/${bird.id}`)}
-            >
-              Voir fiche
-            </button>
-          </article>
-        ))}
-      </div>
+      {loading && <p>Chargement de la liste...</p>}
+      {!loading && error && <p className="info-message">{error}</p>}
+      {!loading && !error && speciesList.length === 0 && (
+        <p className="info-message">Aucune espèce enregistrée pour le moment.</p>
+      )}
+
+      {!loading && !error && speciesList.length > 0 && (
+        <div className="species-grid">
+          {speciesList.map((bird, index) => (
+            <article key={bird.id_espece} className="species-card">
+              <div className="photo-placeholder">Photo {index + 1}</div>
+              <h3>{bird.nom_commun}</h3>
+              <p>{bird.nom_scientifique}</p>
+              <button
+                type="button"
+                className="btn-light full-width"
+                onClick={() => navigate(`/species/${bird.id_espece}`)}
+              >
+                Voir fiche
+              </button>
+            </article>
+          ))}
+        </div>
+      )}
     </section>
   )
 }

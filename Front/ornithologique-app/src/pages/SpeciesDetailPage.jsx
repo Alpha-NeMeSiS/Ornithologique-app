@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { getSpeciesById } from '../services/api'
 
 function formatWeight(minWeight, maxWeight) {
   if (!minWeight && !maxWeight) return 'Non renseigné'
@@ -22,21 +23,14 @@ function SpeciesDetailPage() {
       setNotFound(false)
 
       try {
-        const response = await fetch(`/api/species/${id}`)
-
-        if (response.status === 404) {
-          setNotFound(true)
-          return
-        }
-
-        if (!response.ok) {
-          throw new Error('Impossible de charger la fiche espèce.')
-        }
-
-        const data = await response.json()
+        const data = await getSpeciesById(id)
         setSpecies(data)
-      } catch {
-        setError('Erreur lors du chargement des données.')
+      } catch (fetchError) {
+        if (fetchError.message.toLowerCase().includes('introuvable')) {
+          setNotFound(true)
+        } else {
+          setError(fetchError.message)
+        }
       } finally {
         setLoading(false)
       }

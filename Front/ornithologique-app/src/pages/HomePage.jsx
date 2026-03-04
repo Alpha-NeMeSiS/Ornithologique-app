@@ -1,7 +1,26 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { featuredBirds } from '../data/mockData'
+import { getSpecies } from '../services/api'
 
 function HomePage() {
+  const [featuredBirds, setFeaturedBirds] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchFeaturedBirds() {
+      try {
+        const data = await getSpecies()
+        setFeaturedBirds(data.slice(0, 4))
+      } catch {
+        setFeaturedBirds([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchFeaturedBirds()
+  }, [])
+
   return (
     <>
       <section className="hero-section page-container">
@@ -36,8 +55,8 @@ function HomePage() {
 
       <section className="stats-section page-container">
         <article>
-          <h2>150</h2>
-          <p>Espèces répertoriées</p>
+          <h2>{featuredBirds.length}</h2>
+          <p>Espèces en vedette</p>
         </article>
         <article>
           <h2>1200</h2>
@@ -60,15 +79,26 @@ function HomePage() {
           </Link>
         </div>
 
-        <div className="featured-grid">
-          {featuredBirds.map((bird) => (
-            <article key={bird.name} className="bird-card">
-              <img src={bird.image} alt={bird.name} />
-              <h3>{bird.name}</h3>
-              <p>{bird.latin}</p>
-            </article>
-          ))}
-        </div>
+        {loading && <p>Chargement des espèces...</p>}
+        {!loading && featuredBirds.length === 0 && (
+          <p className="info-message">Aucune espèce à afficher pour le moment.</p>
+        )}
+
+        {!loading && featuredBirds.length > 0 && (
+          <div className="featured-grid">
+            {featuredBirds.map((bird) => (
+              <article key={bird.id_espece} className="bird-card">
+                {bird.images?.[0]?.chemin_image ? (
+                  <img src={bird.images[0].chemin_image} alt={bird.nom_commun} />
+                ) : (
+                  <div className="photo-placeholder">Photo indisponible</div>
+                )}
+                <h3>{bird.nom_commun}</h3>
+                <p>{bird.nom_scientifique}</p>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
     </>
   )

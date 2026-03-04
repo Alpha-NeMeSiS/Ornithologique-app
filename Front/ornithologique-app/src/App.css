@@ -239,6 +239,12 @@
   color: #61717b;
 }
 
+.success-message {
+  margin: 8px 0 16px;
+  color: #1f7a38;
+  font-weight: 600;
+}
+
 .species-detail-page h2 {
   margin: 20px 0 10px;
 }
