@@ -5,6 +5,7 @@ from flask import Flask, jsonify
 from .extensions import cors, db
 from .routes.meta_routes import meta_bp
 from .routes.species_routes import species_bp
+from .routes.meta_routes import meta_bp
 
 
 BASE_DIR = Path(__file__).resolve().parents[1]
