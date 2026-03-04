@@ -1,13 +1,13 @@
+import { NavLink } from 'react-router-dom'
 import './Navbar.css'
 
-function Navbar({ currentPage, onChangePage }) {
+function Navbar() {
   const links = [
-    { key: 'home', label: 'Accueil' },
-    { key: 'list', label: 'Liste espèces' },
-    { key: 'detail', label: 'Détail espèce' },
-    { key: 'add', label: 'Ajouter' },
-    { key: 'table', label: 'Tableau' },
-    { key: 'detect', label: 'Détection IA' },
+    { to: '/', label: 'Accueil' },
+    { to: '/species', label: 'Espèces' },
+    { to: '/add', label: 'Ajouter' },
+    { to: '/table', label: 'Tableau' },
+    { to: '/detect', label: 'Détection IA' },
   ]
 
   return (
@@ -15,14 +15,14 @@ function Navbar({ currentPage, onChangePage }) {
       <div className="brand">🪶 Ornitho-App</div>
       <nav>
         {links.map((link) => (
-          <button
-            key={link.key}
-            type="button"
-            className={currentPage === link.key ? 'active' : ''}
-            onClick={() => onChangePage(link.key)}
+          <NavLink
+            key={link.to}
+            to={link.to}
+            className={({ isActive }) => (isActive ? 'active' : '')}
+            end={link.to === '/'}
           >
             {link.label}
-          </button>
+          </NavLink>
         ))}
       </nav>
       <button type="button" className="login-btn">
