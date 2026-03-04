@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { featuredBirds } from '../data/mockData'
 
 function HomePage() {
@@ -14,16 +15,16 @@ function HomePage() {
             avec notre communauté de passionnés.
           </p>
           <div className="actions-row">
-            <button type="button" className="btn-primary">
+            <Link to="/species" className="btn-primary">
               Explorer les espèces
-            </button>
-            <button type="button" className="btn-light">
+            </Link>
+            <Link to="/add" className="btn-light">
               Ajouter une espèce
-            </button>
+            </Link>
           </div>
-          <button type="button" className="btn-dark">
+          <Link to="/detect" className="btn-dark inline-link">
             ✨ Détection IA
-          </button>
+          </Link>
         </div>
         <div className="hero-image">
           <img
@@ -54,9 +55,9 @@ function HomePage() {
             <h2>Oiseaux en vedette</h2>
             <p>Découvrez les espèces les plus observées.</p>
           </div>
-          <button type="button" className="link-btn">
+          <Link to="/species" className="link-btn">
             Tout voir →
-          </button>
+          </Link>
         </div>
 
         <div className="featured-grid">

@@ -1,11 +1,11 @@
 .main-navbar {
-  height: 72px;
-  padding: 0 28px;
+  padding: 14px 24px;
   background: #ffffff;
   border-bottom: 1px solid #e3e8ec;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
 }
 
 .main-navbar .brand {
@@ -17,19 +17,19 @@
 .main-navbar nav {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
-.main-navbar nav button {
-  border: 0;
+.main-navbar nav a {
+  text-decoration: none;
   background: transparent;
   padding: 8px 12px;
   border-radius: 8px;
   color: #51606b;
   font-weight: 600;
-  cursor: pointer;
 }
 
-.main-navbar nav button.active {
+.main-navbar nav a.active {
   background: #ebf8c6;
   color: #2d4908;
 }
@@ -43,16 +43,22 @@
   font-weight: 600;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   .main-navbar {
-    height: auto;
-    padding: 16px;
     flex-direction: column;
-    gap: 10px;
+    align-items: stretch;
+    padding: 14px;
+  }
+
+  .main-navbar .brand {
+    text-align: center;
   }
 
   .main-navbar nav {
-    flex-wrap: wrap;
     justify-content: center;
+  }
+
+  .login-btn {
+    width: 100%;
   }
 }
