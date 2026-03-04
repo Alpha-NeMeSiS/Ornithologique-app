@@ -1,6 +1,7 @@
 from datetime import date
 
 from flask import Blueprint, jsonify, request
+from sqlalchemy.exc import SQLAlchemyError
 
 from ..extensions import db
 from ..models import Image, Pays, Taxonomie
@@ -11,31 +12,37 @@ meta_bp = Blueprint('meta', __name__, url_prefix='/api')
 
 @meta_bp.get('/taxonomies')
 def get_taxonomies():
-    taxonomies = Taxonomie.query.order_by(Taxonomie.id_taxonomie.asc()).all()
-    data = [
-        {
-            'id_taxonomie': taxonomy.id_taxonomie,
-            'ordre': taxonomy.ordre,
-            'famille': taxonomy.famille,
-            'genre': taxonomy.genre,
-        }
-        for taxonomy in taxonomies
-    ]
-    return jsonify(data), 200
+    try:
+        taxonomies = Taxonomie.query.order_by(Taxonomie.id_taxonomie.asc()).all()
+        data = [
+            {
+                'id_taxonomie': taxonomy.id_taxonomie,
+                'ordre': taxonomy.ordre,
+                'famille': taxonomy.famille,
+                'genre': taxonomy.genre,
+            }
+            for taxonomy in taxonomies
+        ]
+        return jsonify(data), 200
+    except SQLAlchemyError as error:
+        return jsonify({'message': 'Erreur base de données sur les taxonomies.', 'detail': str(error)}), 500
 
 
 @meta_bp.get('/countries')
 def get_countries():
-    countries = Pays.query.order_by(Pays.nom_pays.asc()).all()
-    data = [
-        {
-            'id_pays': country.id_pays,
-            'nom_pays': country.nom_pays,
-            'code_iso': country.code_iso,
-        }
-        for country in countries
-    ]
-    return jsonify(data), 200
+    try:
+        countries = Pays.query.order_by(Pays.nom_pays.asc()).all()
+        data = [
+            {
+                'id_pays': country.id_pays,
+                'nom_pays': country.nom_pays,
+                'code_iso': country.code_iso,
+            }
+            for country in countries
+        ]
+        return jsonify(data), 200
+    except SQLAlchemyError as error:
+        return jsonify({'message': 'Erreur base de données sur les pays.', 'detail': str(error)}), 500
 
 
 @meta_bp.post('/images')
@@ -47,15 +54,18 @@ def create_image():
     if missing:
         return jsonify({'message': f"Champs manquants: {', '.join(missing)}"}), 400
 
-    image = Image(
-        chemin_image=data['chemin_image'],
-        description_image=data.get('description_image'),
-        id_espece=data['id_espece'],
-        id_auteur=data['id_auteur'],
-        date_ajout=date.today(),
-    )
+    try:
+        image = Image(
+            chemin_image=data['chemin_image'],
+            description_image=data.get('description_image'),
+            id_espece=data['id_espece'],
+            id_auteur=data['id_auteur'],
+            date_ajout=date.today(),
+        )
 
-    db.session.add(image)
-    db.session.commit()
-
-    return jsonify(image.to_dict()), 201
+        db.session.add(image)
+        db.session.commit()
+        return jsonify(image.to_dict()), 201
+    except SQLAlchemyError as error:
+        db.session.rollback()
+        return jsonify({'message': "Erreur base de données lors de l'ajout de l'image.", 'detail': str(error)}), 500
