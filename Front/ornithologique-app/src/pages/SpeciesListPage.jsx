@@ -31,6 +31,9 @@ function SpeciesListPage() {
         définition.
       </p>
 
+      {loading && <p>Chargement de la liste...</p>}
+      {!loading && error && <p className="info-message">{error}</p>}
+
       <input
         type="text"
         className="search-input"

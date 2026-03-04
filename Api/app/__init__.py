@@ -8,6 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from .extensions import cors, db
 from .routes.meta_routes import meta_bp
 from .routes.species_routes import species_bp
+from .routes.meta_routes import meta_bp
 
 
 def build_database_uri():
