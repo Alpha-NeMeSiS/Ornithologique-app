@@ -1,0 +1,25 @@
+.main-footer {
+  margin-top: 40px;
+  background: #214a53;
+  color: #d4dde1;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 24px;
+  padding: 30px 28px;
+}
+
+.main-footer h3,
+.main-footer h4 {
+  margin: 0 0 10px;
+  color: #ffffff;
+}
+
+.main-footer p {
+  margin: 5px 0;
+}
+
+@media (max-width: 900px) {
+  .main-footer {
+    grid-template-columns: 1fr;
+  }
+}
