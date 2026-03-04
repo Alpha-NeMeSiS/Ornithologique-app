@@ -1,64 +1,158 @@
+import { useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { getSpeciesById } from '../services/api'
+
+function formatWeight(minWeight, maxWeight) {
+  if (!minWeight && !maxWeight) return 'Non renseigné'
+  if (!minWeight) return `${maxWeight} g max`
+  if (!maxWeight) return `${minWeight} g min`
+  return `${minWeight} g - ${maxWeight} g`
+}
+
 function SpeciesDetailPage() {
+  const { id } = useParams()
+  const [species, setSpecies] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [notFound, setNotFound] = useState(false)
+
+  useEffect(() => {
+    async function fetchSpeciesDetail() {
+      setLoading(true)
+      setError('')
+      setNotFound(false)
+
+      try {
+        const data = await getSpeciesById(id)
+        setSpecies(data)
+      } catch (fetchError) {
+        if (fetchError.message.toLowerCase().includes('introuvable')) {
+          setNotFound(true)
+        } else {
+          setError(fetchError.message)
+        }
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchSpeciesDetail()
+  }, [id])
+
+  if (loading) {
+    return (
+      <section className="page-container standard-page">
+        <h1>Chargement...</h1>
+      </section>
+    )
+  }
+
+  if (notFound) {
+    return (
+      <section className="page-container standard-page">
+        <h1>Espèce introuvable</h1>
+        <p className="page-subtitle">La fiche demandée n&apos;existe pas (404).</p>
+        <Link to="/species" className="btn-light detail-back-link">
+          Retour à la liste
+        </Link>
+      </section>
+    )
+  }
+
+  if (error || !species) {
+    return (
+      <section className="page-container standard-page">
+        <h1>Erreur</h1>
+        <p className="page-subtitle">{error || 'Une erreur est survenue.'}</p>
+      </section>
+    )
+  }
+
+  const images = species.images || []
+  const mainImage = images[0]?.chemin_image
+  const countries = species.pays || []
+
   return (
-    <section className="page-container standard-page">
+    <section className="page-container standard-page species-detail-page">
       <div className="detail-hero">
-        <img
-          src="https://images.unsplash.com/photo-1465101162946-4377e57745c3?auto=format&fit=crop&w=1200&q=80"
-          alt="Héron"
-        />
+        {mainImage ? (
+          <img src={mainImage} alt={species.nom_commun} />
+        ) : (
+          <div className="image-fallback">Image indisponible</div>
+        )}
         <div className="overlay">
-          <span className="danger-badge">Statut critique</span>
-          <h1>Héron cendré (Ardea cinerea)</h1>
+          <h1>{species.nom_commun}</h1>
+          <p>{species.nom_scientifique}</p>
         </div>
       </div>
+
+      {images.length > 1 && (
+        <div className="gallery-grid">
+          {images.slice(1).map((image) => (
+            <img
+              key={image.id_image}
+              src={image.chemin_image}
+              alt={image.description_image || species.nom_commun}
+              className="gallery-item"
+            />
+          ))}
+        </div>
+      )}
 
       <div className="detail-layout">
         <div>
           <h2>Description</h2>
-          <p>
-            Le héron cendré est une espèce d&apos;oiseau de la famille des Ardéidés.
-            On le trouve surtout près des lacs, rivières et étangs.
-          </p>
+          <p>{species.description || 'Description non renseignée.'}</p>
 
           <h2>Caractéristiques</h2>
           <div className="stats-section compact">
             <article>
-              <h3>84 - 102 cm</h3>
+              <h3>{species.taille_cm ? `${species.taille_cm} cm` : 'Non renseigné'}</h3>
               <p>Taille</p>
             </article>
             <article>
-              <h3>155 - 175 cm</h3>
-              <p>Envergure</p>
+              <h3>{formatWeight(species.poids_min_g, species.poids_max_g)}</h3>
+              <p>Poids</p>
             </article>
             <article>
-              <h3>1.0 - 2.1 kg</h3>
-              <p>Poids</p>
+              <h3>{species.longevite_ans ? `${species.longevite_ans} ans` : 'Non renseigné'}</h3>
+              <p>Longévité</p>
+            </article>
+            <article>
+              <h3>{species.nombre_individus || 'Non renseigné'}</h3>
+              <p>Population</p>
             </article>
           </div>
 
-          <h2>Répartition géographique</h2>
-          <div className="map-placeholder">Carte de répartition</div>
+          <h2>Pays liés</h2>
+          {countries.length > 0 ? (
+            <ul className="countries-list">
+              {countries.map((country) => (
+                <li key={country.id_pays}>{country.nom_pays}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>Aucun pays lié à cette espèce.</p>
+          )}
         </div>
 
         <aside>
           <article className="side-card">
             <h3>Taxonomie</h3>
             <p>
-              <strong>Ordre :</strong> Pelecaniformes
+              <strong>Ordre :</strong> {species.taxonomie?.ordre || 'Non renseigné'}
             </p>
             <p>
-              <strong>Famille :</strong> Ardeidae
+              <strong>Famille :</strong> {species.taxonomie?.famille || 'Non renseigné'}
             </p>
             <p>
-              <strong>Genre :</strong> Ardea
+              <strong>Genre :</strong> {species.taxonomie?.genre || 'Non renseigné'}
             </p>
           </article>
 
-          <article className="side-card">
-            <h3>Statut de conservation</h3>
-            <span className="status-red">EN</span>
-            <p>En danger</p>
-          </article>
+          <Link to="/species" className="btn-light detail-back-link">
+            ← Retour à la liste
+          </Link>
         </aside>
       </div>
     </section>

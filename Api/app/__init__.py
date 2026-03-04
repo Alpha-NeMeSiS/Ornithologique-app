@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 
 from .extensions import cors, db
 from .routes.species_routes import species_bp
+from .routes.meta_routes import meta_bp
 
 
 DEFAULT_SQLITE_URI = "sqlite:///ornitho.db"
@@ -16,6 +17,7 @@ def create_app():
     cors.init_app(app)
 
     app.register_blueprint(species_bp)
+    app.register_blueprint(meta_bp)
 
     @app.get("/")
     def healthcheck():
