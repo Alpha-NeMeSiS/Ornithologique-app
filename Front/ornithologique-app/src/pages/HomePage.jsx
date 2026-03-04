@@ -1,6 +1,26 @@
-import { featuredBirds } from '../data/mockData'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { getSpecies } from '../services/api'
 
 function HomePage() {
+  const [featuredBirds, setFeaturedBirds] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchFeaturedBirds() {
+      try {
+        const data = await getSpecies()
+        setFeaturedBirds(data.slice(0, 4))
+      } catch {
+        setFeaturedBirds([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchFeaturedBirds()
+  }, [])
+
   return (
     <>
       <section className="hero-section page-container">
@@ -14,16 +34,16 @@ function HomePage() {
             avec notre communauté de passionnés.
           </p>
           <div className="actions-row">
-            <button type="button" className="btn-primary">
+            <Link to="/species" className="btn-primary">
               Explorer les espèces
-            </button>
-            <button type="button" className="btn-light">
+            </Link>
+            <Link to="/add" className="btn-light">
               Ajouter une espèce
-            </button>
+            </Link>
           </div>
-          <button type="button" className="btn-dark">
+          <Link to="/detect" className="btn-dark inline-link">
             ✨ Détection IA
-          </button>
+          </Link>
         </div>
         <div className="hero-image">
           <img
@@ -35,8 +55,8 @@ function HomePage() {
 
       <section className="stats-section page-container">
         <article>
-          <h2>150</h2>
-          <p>Espèces répertoriées</p>
+          <h2>{featuredBirds.length}</h2>
+          <p>Espèces en vedette</p>
         </article>
         <article>
           <h2>1200</h2>
@@ -54,20 +74,31 @@ function HomePage() {
             <h2>Oiseaux en vedette</h2>
             <p>Découvrez les espèces les plus observées.</p>
           </div>
-          <button type="button" className="link-btn">
+          <Link to="/species" className="link-btn">
             Tout voir →
-          </button>
+          </Link>
         </div>
 
-        <div className="featured-grid">
-          {featuredBirds.map((bird) => (
-            <article key={bird.name} className="bird-card">
-              <img src={bird.image} alt={bird.name} />
-              <h3>{bird.name}</h3>
-              <p>{bird.latin}</p>
-            </article>
-          ))}
-        </div>
+        {loading && <p>Chargement des espèces...</p>}
+        {!loading && featuredBirds.length === 0 && (
+          <p className="info-message">Aucune espèce à afficher pour le moment.</p>
+        )}
+
+        {!loading && featuredBirds.length > 0 && (
+          <div className="featured-grid">
+            {featuredBirds.map((bird) => (
+              <article key={bird.id_espece} className="bird-card">
+                {bird.images?.[0]?.chemin_image ? (
+                  <img src={bird.images[0].chemin_image} alt={bird.nom_commun} />
+                ) : (
+                  <div className="photo-placeholder">Photo indisponible</div>
+                )}
+                <h3>{bird.nom_commun}</h3>
+                <p>{bird.nom_scientifique}</p>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
     </>
   )

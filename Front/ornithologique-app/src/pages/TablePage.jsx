@@ -1,13 +1,26 @@
-import { tableSpecies } from '../data/mockData'
-
-function statusClass(status) {
-  if (status === 'Stable' || status === 'Common') return 'status-green'
-  if (status === 'Vulnerable') return 'status-orange'
-  if (status === 'Protected') return 'status-purple'
-  return 'status-blue'
-}
+import { useEffect, useState } from 'react'
+import { getSpecies } from '../services/api'
 
 function TablePage() {
+  const [rows, setRows] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    async function fetchRows() {
+      try {
+        const data = await getSpecies()
+        setRows(data)
+      } catch (fetchError) {
+        setError(fetchError.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchRows()
+  }, [])
+
   return (
     <section className="page-container standard-page">
       <div className="table-header">
@@ -15,52 +28,46 @@ function TablePage() {
           <h1>Bird Species Database</h1>
           <p className="page-subtitle">Manage and filter ornithological data records.</p>
         </div>
-        <button type="button" className="btn-primary">
-          + Add New Species
-        </button>
       </div>
 
-      <div className="filters-row">
-        <button type="button" className="pill">Family: All Families</button>
-        <button type="button" className="pill">Size: Any Size</button>
-        <button type="button" className="pill">Status: All Status</button>
-      </div>
+      {loading && <p>Chargement du tableau...</p>}
+      {!loading && error && <p className="info-message">{error}</p>}
+      {!loading && !error && rows.length === 0 && (
+        <p className="info-message">Aucune donnée disponible.</p>
+      )}
 
-      <div className="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Family</th>
-              <th>Size</th>
-              <th>Weight</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableSpecies.map((row) => (
-              <tr key={row.name}>
-                <td>{row.name}</td>
-                <td>{row.family}</td>
-                <td>{row.size}</td>
-                <td>{row.weight}</td>
-                <td>
-                  <span className={`status-chip ${statusClass(row.status)}`}>
-                    {row.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="table-footer">
-        <p>Showing 1-5 of 245 species</p>
-        <button type="button" className="btn-dark">
-          Exporter CSV
-        </button>
-      </div>
+      {!loading && !error && rows.length > 0 && (
+        <div className="table-wrapper">
+          <div className="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Nom scientifique</th>
+                  <th>Famille</th>
+                  <th>Taille</th>
+                  <th>Poids</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row) => (
+                  <tr key={row.id_espece}>
+                    <td>{row.nom_commun}</td>
+                    <td>{row.nom_scientifique}</td>
+                    <td>{row.taxonomie?.famille || '-'}</td>
+                    <td>{row.taille_cm ? `${row.taille_cm} cm` : '-'}</td>
+                    <td>
+                      {row.poids_min_g && row.poids_max_g
+                        ? `${row.poids_min_g} - ${row.poids_max_g} g`
+                        : '-'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </section>
   )
 }
