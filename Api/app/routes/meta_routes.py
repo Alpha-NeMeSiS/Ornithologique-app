@@ -1,8 +1,6 @@
 from datetime import date
 
 from flask import Blueprint, jsonify, request
-from sqlalchemy.exc import SQLAlchemyError
-
 from ..extensions import db
 from ..models import Image, Pays, Taxonomie
 
@@ -24,7 +22,8 @@ def get_taxonomies():
             for taxonomy in taxonomies
         ]
         return jsonify(data), 200
-    except SQLAlchemyError as error:
+    except Exception as error:
+        print("API ERROR /api/taxonomies:", error)
         return jsonify({'message': 'Erreur base de données sur les taxonomies.', 'detail': str(error)}), 500
 
 
@@ -41,7 +40,8 @@ def get_countries():
             for country in countries
         ]
         return jsonify(data), 200
-    except SQLAlchemyError as error:
+    except Exception as error:
+        print("API ERROR /api/countries:", error)
         return jsonify({'message': 'Erreur base de données sur les pays.', 'detail': str(error)}), 500
 
 
@@ -66,6 +66,7 @@ def create_image():
         db.session.add(image)
         db.session.commit()
         return jsonify(image.to_dict()), 201
-    except SQLAlchemyError as error:
+    except Exception as error:
         db.session.rollback()
+        print("API ERROR POST /api/images:", error)
         return jsonify({'message': "Erreur base de données lors de l'ajout de l'image.", 'detail': str(error)}), 500

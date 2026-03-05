@@ -6,7 +6,6 @@ from flask import Flask, jsonify
 from .extensions import cors, db
 from .routes.meta_routes import meta_bp
 from .routes.species_routes import species_bp
-from .routes.meta_routes import meta_bp
 
 
 def build_database_uri():
@@ -18,7 +17,7 @@ def build_database_uri():
     db_password = os.getenv('DB_PASSWORD', 'postgres')
     db_host = os.getenv('DB_HOST', 'localhost')
     db_port = os.getenv('DB_PORT', '5433')
-    db_name = os.getenv('DB_NAME', 'ornithologique DB')
+    db_name = os.getenv('DB_NAME', 'ornithologique_db')
 
     encoded_password = quote_plus(db_password)
     encoded_db_name = quote_plus(db_name)

@@ -1,6 +1,4 @@
 from flask import Blueprint, jsonify, request
-from sqlalchemy.exc import SQLAlchemyError
-
 from ..extensions import db
 from ..models import Espece, Taxonomie
 
@@ -13,7 +11,8 @@ def get_species_list():
     try:
         species = Espece.query.order_by(Espece.id_espece.asc()).all()
         return jsonify([item.to_dict() for item in species]), 200
-    except SQLAlchemyError as error:
+    except Exception as error:
+        print("API ERROR /api/species:", error)
         return jsonify({'message': 'Erreur base de données sur la liste des espèces.', 'detail': str(error)}), 500
 
 
@@ -21,7 +20,8 @@ def get_species_list():
 def get_species_detail(species_id):
     try:
         species = Espece.query.get(species_id)
-    except SQLAlchemyError as error:
+    except Exception as error:
+        print("API ERROR /api/species/<id>:", error)
         return jsonify({'message': 'Erreur base de données sur le détail espèce.', 'detail': str(error)}), 500
 
     if species is None:
@@ -63,6 +63,7 @@ def create_species():
         db.session.add(species)
         db.session.commit()
         return jsonify(species.to_dict()), 201
-    except SQLAlchemyError as error:
+    except Exception as error:
         db.session.rollback()
+        print("API ERROR POST /api/species:", error)
         return jsonify({'message': "Erreur base de données lors de l'ajout de l'espèce.", 'detail': str(error)}), 500
