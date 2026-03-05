@@ -4,7 +4,7 @@ from .extensions import db
 
 
 class Taxonomie(db.Model):
-    __tablename__ = "TAXONOMIE"
+    __tablename__ = "taxonomie"
 
     id_taxonomie = db.Column(db.Integer, primary_key=True)
     ordre = db.Column(db.String(100), nullable=False)
@@ -13,7 +13,7 @@ class Taxonomie(db.Model):
 
 
 class Auteur(db.Model):
-    __tablename__ = "AUTEUR"
+    __tablename__ = "auteur"
 
     id_auteur = db.Column(db.Integer, primary_key=True)
     nom_auteur = db.Column(db.String(100), nullable=False)
@@ -21,7 +21,7 @@ class Auteur(db.Model):
 
 
 class Pays(db.Model):
-    __tablename__ = "PAYS"
+    __tablename__ = "pays"
 
     id_pays = db.Column(db.Integer, primary_key=True)
     nom_pays = db.Column(db.String(100), nullable=False, unique=True)
@@ -29,14 +29,14 @@ class Pays(db.Model):
 
 
 class EspecePays(db.Model):
-    __tablename__ = "ESPECE_PAYS"
+    __tablename__ = "espece_pays"
 
-    id_espece = db.Column(db.Integer, db.ForeignKey("ESPECE.id_espece"), primary_key=True)
-    id_pays = db.Column(db.Integer, db.ForeignKey("PAYS.id_pays"), primary_key=True)
+    id_espece = db.Column(db.Integer, db.ForeignKey("espece.id_espece"), primary_key=True)
+    id_pays = db.Column(db.Integer, db.ForeignKey("pays.id_pays"), primary_key=True)
 
 
 class Espece(db.Model):
-    __tablename__ = "ESPECE"
+    __tablename__ = "espece"
 
     id_espece = db.Column(db.Integer, primary_key=True)
     nom_commun = db.Column(db.String(150), nullable=False)
@@ -47,11 +47,11 @@ class Espece(db.Model):
     poids_max_g = db.Column(db.Integer)
     longevite_ans = db.Column(db.Integer)
     nombre_individus = db.Column(db.Integer)
-    id_taxonomie = db.Column(db.Integer, db.ForeignKey("TAXONOMIE.id_taxonomie"), nullable=False)
+    id_taxonomie = db.Column(db.Integer, db.ForeignKey("taxonomie.id_taxonomie"), nullable=False)
 
     taxonomie = db.relationship("Taxonomie", backref="especes")
     images = db.relationship("Image", backref="espece", lazy=True)
-    pays = db.relationship("Pays", secondary="ESPECE_PAYS", lazy="subquery")
+    pays = db.relationship("Pays", secondary="espece_pays", lazy="subquery")
 
     def to_dict(self):
         return {
@@ -81,14 +81,14 @@ class Espece(db.Model):
 
 
 class Image(db.Model):
-    __tablename__ = "IMAGE"
+    __tablename__ = "image"
 
     id_image = db.Column(db.Integer, primary_key=True)
     chemin_image = db.Column(db.String(255), nullable=False)
     date_ajout = db.Column(db.Date, default=date.today)
     description_image = db.Column(db.String(255))
-    id_espece = db.Column(db.Integer, db.ForeignKey("ESPECE.id_espece"), nullable=False)
-    id_auteur = db.Column(db.Integer, db.ForeignKey("AUTEUR.id_auteur"), nullable=False)
+    id_espece = db.Column(db.Integer, db.ForeignKey("espece.id_espece"), nullable=False)
+    id_auteur = db.Column(db.Integer, db.ForeignKey("auteur.id_auteur"), nullable=False)
 
     auteur = db.relationship("Auteur", backref="images")
 
