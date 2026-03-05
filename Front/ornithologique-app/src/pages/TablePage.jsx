@@ -21,6 +21,28 @@ function TablePage() {
     fetchRows()
   }, [])
 
+  const handleExportCSV = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/export/csv')
+
+      if (!response.ok) {
+        throw new Error("Impossible d'exporter le fichier CSV.")
+      }
+
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+
+      const link = document.createElement('a')
+      link.href = url
+      link.download = 'especes.csv'
+      link.click()
+
+      window.URL.revokeObjectURL(url)
+    } catch (exportError) {
+      setError(exportError.message)
+    }
+  }
+
   return (
     <section className="page-container standard-page">
       <div className="table-header">
@@ -28,6 +50,9 @@ function TablePage() {
           <h1>Bird Species Database</h1>
           <p className="page-subtitle">Manage and filter ornithological data records.</p>
         </div>
+        <button type="button" className="btn-dark" onClick={handleExportCSV}>
+          Exporter CSV
+        </button>
       </div>
 
       {loading && <p>Chargement du tableau...</p>}

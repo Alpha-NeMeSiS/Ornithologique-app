@@ -1,8 +1,10 @@
 from datetime import date
+import csv
+import io
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, Response, jsonify, request
 from ..extensions import db
-from ..models import Image, Pays, Taxonomie
+from ..models import Espece, Image, Pays, Taxonomie
 
 
 meta_bp = Blueprint('meta', __name__, url_prefix='/api')
@@ -70,3 +72,40 @@ def create_image():
         db.session.rollback()
         print("API ERROR POST /api/images:", error)
         return jsonify({'message': "Erreur base de données lors de l'ajout de l'image.", 'detail': str(error)}), 500
+
+
+@meta_bp.get('/export/csv')
+def export_species_csv():
+    try:
+        species = Espece.query.order_by(Espece.id_espece.asc()).all()
+
+        output = io.StringIO()
+        writer = csv.writer(output)
+
+        writer.writerow([
+            'id_espece',
+            'nom_commun',
+            'nom_scientifique',
+            'taille_cm',
+            'poids_min_g',
+            'poids_max_g',
+        ])
+
+        for item in species:
+            writer.writerow([
+                item.id_espece,
+                item.nom_commun,
+                item.nom_scientifique,
+                item.taille_cm,
+                item.poids_min_g,
+                item.poids_max_g,
+            ])
+
+        return Response(
+            output.getvalue(),
+            mimetype='text/csv',
+            headers={'Content-Disposition': 'attachment; filename=especes.csv'},
+        )
+    except Exception as error:
+        print('API ERROR /api/export/csv:', error)
+        return jsonify({'message': "Erreur lors de l'export CSV.", 'detail': str(error)}), 500
