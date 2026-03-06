@@ -1,4 +1,5 @@
-import './Footer.css'
+import "./Footer.css";
+import { Link } from "react-router-dom";
 
 function Footer() {
   return (
@@ -9,18 +10,18 @@ function Footer() {
       </div>
       <div>
         <h4>Navigation</h4>
-        <p>Accueil</p>
-        <p>Liste des espèces</p>
-        <p>Dernières observations</p>
+        <Link to="/">Accueil</Link>
+        <br />
+        <Link to="/species">Liste des espèces</Link>
       </div>
       <div>
         <h4>Outils</h4>
-        <p>Détection IA</p>
-        <p>Ajouter une observation</p>
-        <p>Exporter CSV</p>
+        <Link to="/detect">Détection IA</Link><br />
+        <Link to="/add">Ajouter une observation</Link><br />
+        <Link to="/table">Exporter CSV</Link>
       </div>
     </footer>
-  )
+  );
 }
 
-export default Footer
+export default Footer;

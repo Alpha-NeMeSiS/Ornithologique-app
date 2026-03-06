@@ -211,28 +211,28 @@ INSERT INTO IMAGE (
 )
 VALUES
 (
-    'https://commons.wikimedia.org/wiki/File%3ACommon_Blackbird_%28turdus_merula%29.jpg',
+    'https://luberon.fr/img/article/merle-noir.jpg',
     DATE '2014-03-29',
     'Photo d''un merle noir adulte mâle.',
     (SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Turdus merula'),
     (SELECT id_auteur FROM AUTEUR WHERE nom_auteur = 'Sharp' AND prenom_auteur = 'Charles J.')
 ),
 (
-    'https://commons.wikimedia.org/wiki/File%3APasser_domesticus_-England_-male.jpg',
+    'https://www.mnhn.fr/system/files/2023-01/moineau_domestique_passer_domesticus_c_f_croset_lpo.jpg',
     DATE '2008-05-09',
     'Photo d''un moineau domestique mâle.',
     (SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Passer domesticus'),
     (SELECT id_auteur FROM AUTEUR WHERE nom_auteur = 'Friel' AND prenom_auteur = 'David')
 ),
 (
-    'https://commons.wikimedia.org/wiki/File%3AErithacus_rubecula.jpg',
+    'https://www.lpo.fr/var/site/storage/images/_aliases/detailed_content/3/2/8/8/48823-78-fre-FR/Rougegorge%20familier%20Erythacus%20rubecula%20JJ_Carlier%200494-720_410pix.jpg',
     DATE '2008-04-15',
     'Photo d''un rouge-gorge familier.',
     (SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Erithacus rubecula'),
     (SELECT id_auteur FROM AUTEUR WHERE nom_auteur = 'Friel' AND prenom_auteur = 'David')
 ),
 (
-    'https://commons.wikimedia.org/wiki/File%3ACyanistes_caeruleus_Luc_Viatour.jpg',
+    'https://www.lpo-idf.fr/site/_img/especemois/MesangeBleue_2_Luc_Viatour.jpg',
     DATE '2008-10-04',
     'Photo d''une mésange bleue.',
     (SELECT id_espece FROM ESPECE WHERE nom_scientifique = 'Cyanistes caeruleus'),

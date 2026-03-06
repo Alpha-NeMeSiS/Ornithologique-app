@@ -27,7 +27,6 @@ function HomePage() {
     <>
       <section className="hero-section page-container">
         <div>
-          <span className="badge">Observation IA</span>
           <h1>
             Bienvenue sur <span>Ornitho-App</span>
           </h1>
