@@ -10,21 +10,21 @@ function Footer() {
       <div>
         <h4>Navigation</h4>
          <Link to="/"
-           <p>Accueil</p>
+           Accueil
           </Link>
           <Link to="/species"
-            <p>Liste des espèces</p>
+            Liste des espèces
       </div>
       <div>
         <h4>Outils</h4>
         <Link to="/detect"
-          <p>Détection IA</p>
+          Détection IA
         </Link>
         <Link to="/add"
-          <p>Ajouter une observation</p>
+          Ajouter une observation
         </Link>
         <Link to="/table"
-          <p>Exporter CSV</p>
+          Exporter CSV
         </Link>
       </div>
     </footer>
