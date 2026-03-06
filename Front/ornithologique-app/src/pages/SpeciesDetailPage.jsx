@@ -99,7 +99,7 @@ function SpeciesDetailPage() {
       <div className="detail-hero">
         {species.images?.[0]?.chemin_image && (
           <img
-            src={`http://localhost:5000${species.images?.[0]?.chemin_image}`}
+            src={`${species.images?.[0]?.chemin_image}`}
             alt={species.nom_commun}
           />
         )}
