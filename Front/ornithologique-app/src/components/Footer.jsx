@@ -9,21 +9,22 @@ function Footer() {
       </div>
       <div>
         <h4>Navigation</h4>
-         <Link to="/"
+         <Link to="/">
            Accueil
           </Link>
-          <Link to="/species"
+          <Link to="/species">
             Liste des espèces
+          </Link>
       </div>
       <div>
         <h4>Outils</h4>
-        <Link to="/detect"
+        <Link to="/detect">
           Détection IA
         </Link>
-        <Link to="/add"
+        <Link to="/add">
           Ajouter une observation
         </Link>
-        <Link to="/table"
+        <Link to="/table">
           Exporter CSV
         </Link>
       </div>
