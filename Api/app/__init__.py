@@ -13,11 +13,11 @@ def build_database_uri():
     if database_url:
         return database_url.replace('postgresql+psycopg2://', 'postgresql+psycopg://')
 
-    db_user = os.getenv('DB_USER', 'postgres')
-    db_password = os.getenv('DB_PASSWORD', 'postgres')
-    db_host = os.getenv('DB_HOST', 'localhost')
-    db_port = os.getenv('DB_PORT', '5433')
-    db_name = os.getenv('DB_NAME', 'ornithologique_db')
+    db_user = os.getenv('DB_USER')
+    db_password = os.getenv('DB_PASSWORD')
+    db_host = os.getenv('DB_HOST')
+    db_port = os.getenv('DB_PORT')
+    db_name = os.getenv('DB_NAME')
 
     encoded_password = quote_plus(db_password)
     encoded_db_name = quote_plus(db_name)
