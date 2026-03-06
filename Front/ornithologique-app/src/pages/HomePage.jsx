@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { buildImageUrl, getFallbackImage, getSpecies } from '../services/api'
+import { getFallbackImage, getSpecies } from '../services/api'
 
 function HomePage() {
   const [featuredBirds, setFeaturedBirds] = useState([])
   const [loading, setLoading] = useState(true)
+
+  const fallback = getFallbackImage()
 
   useEffect(() => {
     async function fetchFeaturedBirds() {
@@ -47,8 +49,8 @@ function HomePage() {
         </div>
         <div className="hero-image">
           <img
-            src="https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&w=900&q=80"
-            alt="Oiseau coloré"
+            src={featuredBirds?.[0]?.images?.[0]?.chemin_image ? `http://localhost:5000${featuredBirds?.[0]?.images?.[0]?.chemin_image}` : fallback}
+            alt={featuredBirds?.[0]?.nom_commun || 'Oiseau'}
           />
         </div>
       </section>
@@ -87,12 +89,14 @@ function HomePage() {
         {!loading && featuredBirds.length > 0 && (
           <div className="featured-grid">
             {featuredBirds.map((bird) => {
-              const fallback = getFallbackImage()
-              const mainImage = bird.images?.[0]?.chemin_image || fallback
+              const mainImage = bird.images?.[0]?.chemin_image
 
               return (
                 <article key={bird.id_espece} className="bird-card">
-                  <img src={buildImageUrl(mainImage)} alt={bird.nom_commun} />
+                  <img
+                    src={mainImage ? `http://localhost:5000${mainImage}` : fallback}
+                    alt={bird.nom_commun}
+                  />
                   <h3>{bird.nom_commun}</h3>
                   <p>{bird.nom_scientifique}</p>
                 </article>
