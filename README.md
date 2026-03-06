@@ -36,6 +36,8 @@ Base de données :
 ---
 
 # Structure du projet
+
+<p>
 Ornithologique-app
 │
 ├── api/ # Backend Flask
@@ -43,6 +45,8 @@ Ornithologique-app
 ├── database/
 │ └── script.sql
 ├── README.md
+</p>
+
 ---
 
 # Installation et lancement
