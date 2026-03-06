@@ -94,7 +94,7 @@ function HomePage() {
               return (
                 <article key={bird.id_espece} className="bird-card">
                   <img
-                    src={mainImage ? `http://localhost:5000${mainImage}` : fallback}
+                    src={mainImage ? `${mainImage}` : fallback}
                     alt={bird.nom_commun}
                   />
                   <h3>{bird.nom_commun}</h3>
