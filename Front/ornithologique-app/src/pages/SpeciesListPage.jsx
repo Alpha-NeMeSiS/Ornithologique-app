@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getFallbackImage, getSpecies } from '../services/api'
+import { getSpecies } from '../services/api'
 
 function SpeciesListPage() {
   const [speciesList, setSpeciesList] = useState([])
@@ -84,27 +84,32 @@ function SpeciesListPage() {
       {!loading && !error && speciesList.length > 0 && (
         <div className="species-grid">
           {speciesList.map((bird) => {
-            const fallback = getFallbackImage()
             const mainImage = bird.images?.[0]?.chemin_image
+            const hasImage = Boolean(mainImage)
 
             return (
-            <article key={bird.id_espece} className="species-card">
-              <div className="photo-placeholder">
-                <img
-                  src={mainImage ? `${mainImage}` : fallback}
-                  alt={bird.nom_commun}
-                />
-              </div>
-              <h3>{bird.nom_commun}</h3>
-              <p>{bird.nom_scientifique}</p>
-              <button
-                type="button"
-                className="btn-light full-width"
-                onClick={() => navigate(`/species/${bird.id_espece}`)}
-              >
-                Voir fiche
-              </button>
-            </article>
+              <article key={bird.id_espece} className="species-card">
+                <div className="species-card-image">
+                  {hasImage ? (
+                    <img src={mainImage} alt={bird.nom_commun} />
+                  ) : (
+                    <div className="species-card-image-placeholder" aria-hidden="true">
+                      Image indisponible
+                    </div>
+                  )}
+                </div>
+                <div className="species-card-body">
+                  <h3>{bird.nom_commun}</h3>
+                  <p>{bird.nom_scientifique}</p>
+                  <button
+                    type="button"
+                    className="btn-light full-width"
+                    onClick={() => navigate(`/species/${bird.id_espece}`)}
+                  >
+                    Voir fiche
+                  </button>
+                </div>
+              </article>
             )
           })}
         </div>
