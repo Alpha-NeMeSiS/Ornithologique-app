@@ -1,4 +1,5 @@
 const API_BASE_URL = '/api'
+const API_SERVER_URL = 'http://localhost:5000'
 
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, options)
@@ -47,6 +48,25 @@ export function createSpecies(speciesData) {
     },
     body: JSON.stringify(speciesData),
   })
+}
+
+export function uploadSpeciesImage(speciesId, file) {
+  const formData = new FormData()
+  formData.append('image', file)
+
+  return request(`/species/${speciesId}/image`, {
+    method: 'POST',
+    body: formData,
+  })
+}
+
+export function buildImageUrl(imagePath) {
+  if (!imagePath) return ''
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath
+  }
+
+  return `${API_SERVER_URL}${imagePath}`
 }
 
 export function getTaxonomies() {

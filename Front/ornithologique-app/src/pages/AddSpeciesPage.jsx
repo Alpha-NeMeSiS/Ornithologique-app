@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { createSpecies, getTaxonomies } from '../services/api'
+import { createSpecies, getTaxonomies, uploadSpeciesImage } from '../services/api'
 
 const initialForm = {
   nom_commun: '',
@@ -15,6 +15,7 @@ const initialForm = {
 
 function AddSpeciesPage() {
   const [formData, setFormData] = useState(initialForm)
+  const [image, setImage] = useState(null)
   const [taxonomies, setTaxonomies] = useState([])
   const [loadingTaxonomies, setLoadingTaxonomies] = useState(true)
   const [loadingSubmit, setLoadingSubmit] = useState(false)
@@ -63,9 +64,15 @@ function AddSpeciesPage() {
         id_taxonomie: Number(formData.id_taxonomie),
       }
 
-      await createSpecies(payload)
+      const createdSpecies = await createSpecies(payload)
+
+      if (image) {
+        await uploadSpeciesImage(createdSpecies.id_espece, image)
+      }
+
       setSuccessMessage('Espèce ajoutée avec succès.')
       setFormData(initialForm)
+      setImage(null)
     } catch (submitError) {
       setError(submitError.message)
     } finally {
@@ -172,8 +179,25 @@ function AddSpeciesPage() {
           />
         </label>
 
+        <h2>Image (optionnel)</h2>
+        <label>
+          Photo de l&apos;oiseau
+          <input
+            type="file"
+            accept=".jpg,.jpeg,.png"
+            onChange={(event) => setImage(event.target.files?.[0] || null)}
+          />
+        </label>
+
         <div className="form-actions">
-          <button type="button" className="btn-light" onClick={() => setFormData(initialForm)}>
+          <button
+            type="button"
+            className="btn-light"
+            onClick={() => {
+              setFormData(initialForm)
+              setImage(null)
+            }}
+          >
             Annuler
           </button>
           <button type="submit" className="btn-primary" disabled={loadingSubmit}>
