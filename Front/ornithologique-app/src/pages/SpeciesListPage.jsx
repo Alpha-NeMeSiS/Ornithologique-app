@@ -6,12 +6,17 @@ function SpeciesListPage() {
   const [speciesList, setSpeciesList] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [search, setSearch] = useState('')
+  const [family, setFamily] = useState('all')
   const navigate = useNavigate()
 
   useEffect(() => {
     async function fetchSpeciesList() {
+      setLoading(true)
+      setError('')
+
       try {
-        const data = await getSpecies()
+        const data = await getSpecies({ search, family })
         setSpeciesList(data)
       } catch (fetchError) {
         setError(fetchError.message)
@@ -21,7 +26,7 @@ function SpeciesListPage() {
     }
 
     fetchSpeciesList()
-  }, [])
+  }, [search, family])
 
   return (
     <section className="page-container standard-page">
@@ -31,26 +36,41 @@ function SpeciesListPage() {
         définition.
       </p>
 
-      {loading && <p>Chargement de la liste...</p>}
-      {!loading && error && <p className="info-message">{error}</p>}
-
       <input
         type="text"
         className="search-input"
         placeholder="Rechercher par nom commun ou scientifique"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
       />
 
       <div className="filters-row">
-        <button type="button" className="pill active">
+        <button
+          type="button"
+          className={`pill ${family === 'all' ? 'active' : ''}`}
+          onClick={() => setFamily('all')}
+        >
           Tous les oiseaux
         </button>
-        <button type="button" className="pill">
+        <button
+          type="button"
+          className={`pill ${family === 'Passereaux' ? 'active' : ''}`}
+          onClick={() => setFamily('Passereaux')}
+        >
           Passereaux
         </button>
-        <button type="button" className="pill">
+        <button
+          type="button"
+          className={`pill ${family === 'Rapaces' ? 'active' : ''}`}
+          onClick={() => setFamily('Rapaces')}
+        >
           Rapaces
         </button>
-        <button type="button" className="pill">
+        <button
+          type="button"
+          className={`pill ${family === "Oiseaux d'eau" ? 'active' : ''}`}
+          onClick={() => setFamily("Oiseaux d'eau")}
+        >
           Oiseaux d&apos;eau
         </button>
       </div>
@@ -58,7 +78,7 @@ function SpeciesListPage() {
       {loading && <p>Chargement de la liste...</p>}
       {!loading && error && <p className="info-message">{error}</p>}
       {!loading && !error && speciesList.length === 0 && (
-        <p className="info-message">Aucune espèce enregistrée pour le moment.</p>
+        <p className="info-message">Aucune espèce trouvée pour cette recherche.</p>
       )}
 
       {!loading && !error && speciesList.length > 0 && (
