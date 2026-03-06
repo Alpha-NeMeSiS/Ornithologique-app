@@ -91,7 +91,7 @@ function SpeciesListPage() {
             <article key={bird.id_espece} className="species-card">
               <div className="photo-placeholder">
                 <img
-                  src={mainImage ? `http://localhost:5000${mainImage}` : fallback}
+                  src={mainImage ? `${mainImage}` : fallback}
                   alt={bird.nom_commun}
                 />
               </div>
