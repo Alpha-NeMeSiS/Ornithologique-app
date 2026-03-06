@@ -1,41 +1,105 @@
-## Ornitho-App
+# Ornithologique App
 
-Ornitho-App est une application web de gestion et de reconnaissance d’espèces d’oiseaux.
-Elle permet de consulter une base d’espèces, d’ajouter des informations et des images, puis d’utiliser un modèle d’intelligence artificielle pour identifier automatiquement une espèce à partir d’une image.
+## Présentation
 
-### Stack technique
+Ornithologique App est une application web permettant de consulter et gérer une base de données d'espèces d'oiseaux.
 
-* **Frontend** : React
-* **API REST** : Flask
-* **Backend IA** : modèle pré-entraîné via Hugging Face
+L'utilisateur peut :
+- consulter un annuaire des espèces
+- afficher la fiche détaillée d'un oiseau
+- ajouter une nouvelle espèce
+- ajouter des images aux espèces
+- filtrer et rechercher des espèces
+- exporter les données en CSV
+
+Le projet est composé de :
+- un **frontend React**
+- une **API REST Flask**
+- une **base de données PostgreSQL**
 
 ---
 
-## API Flask (version simple)
+# Technologies utilisées
 
-L’API est dans le dossier `Api/` et s’appuie sur les tables du schéma SQL (`TAXONOMIE`, `ESPECE`, `PAYS`, `IMAGE`, etc.).
+Frontend :
+- React
+- CSS
 
-### Lancer l’API
+Backend :
+- Python
+- Flask
+- SQLAlchemy
 
-```bash
-cd Api
-python3 init_db.py
-python3 run.py
-```
+Base de données :
+- PostgreSQL
 
-### Endpoints disponibles
+---
 
-- `GET /` : test de vie de l’API.
-- `GET /api/species` : liste des espèces.
-- `GET /api/species/<id>` : détail d’une espèce.
-- `POST /api/species` : ajout d’une espèce (payload JSON minimal : `nom_commun`, `nom_scientifique`, `id_taxonomie`).
+# Structure du projet
+Ornithologique-app
+│
+├── api/ # Backend Flask
+├── front/ # Application React
+├── database/
+│ └── script.sql
+├── README.md
+---
 
-### Exemple de payload POST
+# Installation et lancement
 
-```json
-{
-  "nom_commun": "Mésange charbonnière",
-  "nom_scientifique": "Parus major",
-  "id_taxonomie": 1
-}
-```
+## 1 - Base de données
+
+Installer PostgreSQL puis créer une base :
+ornitho_db
+
+Importer ensuite le script SQL :
+psql -U postgres -d ornitho_db -f script.sql
+
+---
+
+## 2 - Lancer le backend
+
+Se placer dans le dossier :
+api
+
+Créer l'environnement virtuel :
+python -m venv .venv
+
+Activer l'environnement :
+Windows :
+.venv\Scripts\activate
+
+Installer les dépendances :
+pip install -r requirements.txt
+
+Lancer l'API :
+flask run
+
+Le backend sera disponible sur :
+http://localhost:5000
+
+---
+
+## 3 - Lancer le frontend
+Se placer dans le dossier :
+front
+
+Installer les dépendances :
+npm install
+
+Lancer l'application :
+npm run dev
+
+Le site sera disponible sur :
+http://localhost:5173
+
+---
+
+# Fonctionnalités
+
+- consultation des espèces
+- recherche et filtrage
+- ajout d'espèces
+- ajout d'images
+- fiche détaillée
+- export CSV
