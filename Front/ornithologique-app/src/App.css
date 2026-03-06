@@ -253,23 +253,15 @@
   position: relative;
   margin-bottom: 20px;
   border-radius: 12px;
-  overflow: hidden;
-  background: #dbe2e7;
-}
-
-.detail-hero img,
-.image-fallback {
   width: 100%;
-  min-height: 260px;
   height: 360px;
-  object-fit: cover;
+  overflow: hidden;
 }
 
-.image-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #51606b;
+.detail-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .overlay {
@@ -544,8 +536,7 @@ th {
     grid-template-columns: 1fr;
   }
 
-  .detail-hero img,
-  .image-fallback {
+  .detail-hero {
     height: 240px;
   }
 }

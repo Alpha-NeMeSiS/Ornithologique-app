@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getFallbackImage, getSpeciesById, uploadSpeciesImage } from '../services/api'
+import { getSpeciesById, uploadSpeciesImage } from '../services/api'
 
 function formatWeight(minWeight, maxWeight) {
   if (!minWeight && !maxWeight) return 'Non renseigné'
@@ -92,21 +92,17 @@ function SpeciesDetailPage() {
     )
   }
 
-  const images = species.images || []
-  const fallback = getFallbackImage()
   const countries = species.pays || []
 
   return (
     <section className="page-container standard-page species-detail-page">
       <div className="detail-hero">
-        {(images.length > 0 ? images : [{ chemin_image: fallback }]).map((birdImage) => (
+        {species.images?.[0]?.chemin_image && (
           <img
-            key={birdImage.chemin_image}
-            src={birdImage.chemin_image === fallback ? fallback : `http://localhost:5000${birdImage.chemin_image}`}
-            alt="oiseau"
-            className="gallery-item"
+            src={`http://localhost:5000${species.images?.[0]?.chemin_image}`}
+            alt={species.nom_commun}
           />
-        ))}
+        )}
         <div className="overlay">
           <h1>{species.nom_commun}</h1>
           <p>{species.nom_scientifique}</p>
