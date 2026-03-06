@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getSpeciesById } from '../services/api'
+import { buildImageUrl, getSpeciesById, uploadSpeciesImage } from '../services/api'
 
 function formatWeight(minWeight, maxWeight) {
   if (!minWeight && !maxWeight) return 'Non renseigné'
@@ -15,29 +15,53 @@ function SpeciesDetailPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [notFound, setNotFound] = useState(false)
+  const [image, setImage] = useState(null)
+  const [uploadLoading, setUploadLoading] = useState(false)
+  const [uploadMessage, setUploadMessage] = useState('')
+
+  const fetchSpeciesDetail = useCallback(async () => {
+    setLoading(true)
+    setError('')
+    setNotFound(false)
+
+    try {
+      const data = await getSpeciesById(id)
+      setSpecies(data)
+    } catch (fetchError) {
+      if (fetchError.message.toLowerCase().includes('introuvable')) {
+        setNotFound(true)
+      } else {
+        setError(fetchError.message)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }, [id])
 
   useEffect(() => {
-    async function fetchSpeciesDetail() {
-      setLoading(true)
-      setError('')
-      setNotFound(false)
+    fetchSpeciesDetail()
+  }, [fetchSpeciesDetail])
 
-      try {
-        const data = await getSpeciesById(id)
-        setSpecies(data)
-      } catch (fetchError) {
-        if (fetchError.message.toLowerCase().includes('introuvable')) {
-          setNotFound(true)
-        } else {
-          setError(fetchError.message)
-        }
-      } finally {
-        setLoading(false)
-      }
+  async function handleUploadImage() {
+    if (!image) {
+      setUploadMessage('Veuillez sélectionner une image.')
+      return
     }
 
-    fetchSpeciesDetail()
-  }, [id])
+    setUploadLoading(true)
+    setUploadMessage('')
+
+    try {
+      await uploadSpeciesImage(id, image)
+      setImage(null)
+      setUploadMessage('Image ajoutée avec succès.')
+      await fetchSpeciesDetail()
+    } catch (uploadError) {
+      setUploadMessage(uploadError.message)
+    } finally {
+      setUploadLoading(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -76,7 +100,7 @@ function SpeciesDetailPage() {
     <section className="page-container standard-page species-detail-page">
       <div className="detail-hero">
         {mainImage ? (
-          <img src={mainImage} alt={species.nom_commun} />
+          <img src={buildImageUrl(mainImage)} alt={species.nom_commun} />
         ) : (
           <div className="image-fallback">Image indisponible</div>
         )}
@@ -88,11 +112,11 @@ function SpeciesDetailPage() {
 
       {images.length > 1 && (
         <div className="gallery-grid">
-          {images.slice(1).map((image) => (
+          {images.slice(1).map((birdImage) => (
             <img
-              key={image.id_image}
-              src={image.chemin_image}
-              alt={image.description_image || species.nom_commun}
+              key={birdImage.id_image}
+              src={buildImageUrl(birdImage.chemin_image)}
+              alt={birdImage.description_image || species.nom_commun}
               className="gallery-item"
             />
           ))}
@@ -148,6 +172,24 @@ function SpeciesDetailPage() {
             <p>
               <strong>Genre :</strong> {species.taxonomie?.genre || 'Non renseigné'}
             </p>
+          </article>
+
+          <article className="side-card">
+            <h3>Ajouter une image</h3>
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png"
+              onChange={(event) => setImage(event.target.files?.[0] || null)}
+            />
+            <button
+              type="button"
+              className="btn-primary full-width"
+              onClick={handleUploadImage}
+              disabled={uploadLoading}
+            >
+              {uploadLoading ? 'Upload...' : 'Ajouter une image'}
+            </button>
+            {uploadMessage && <p>{uploadMessage}</p>}
           </article>
 
           <Link to="/species" className="btn-light detail-back-link">
