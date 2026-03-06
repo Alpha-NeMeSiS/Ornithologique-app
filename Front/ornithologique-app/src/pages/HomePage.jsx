@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getSpecies } from '../services/api'
+import { buildImageUrl, getFallbackImage, getSpecies } from '../services/api'
 
 function HomePage() {
   const [featuredBirds, setFeaturedBirds] = useState([])
@@ -86,17 +86,18 @@ function HomePage() {
 
         {!loading && featuredBirds.length > 0 && (
           <div className="featured-grid">
-            {featuredBirds.map((bird) => (
-              <article key={bird.id_espece} className="bird-card">
-                {bird.images?.[0]?.chemin_image ? (
-                  <img src={bird.images[0].chemin_image} alt={bird.nom_commun} />
-                ) : (
-                  <div className="photo-placeholder">Photo indisponible</div>
-                )}
-                <h3>{bird.nom_commun}</h3>
-                <p>{bird.nom_scientifique}</p>
-              </article>
-            ))}
+            {featuredBirds.map((bird) => {
+              const fallback = getFallbackImage()
+              const mainImage = bird.images?.[0]?.chemin_image || fallback
+
+              return (
+                <article key={bird.id_espece} className="bird-card">
+                  <img src={buildImageUrl(mainImage)} alt={bird.nom_commun} />
+                  <h3>{bird.nom_commun}</h3>
+                  <p>{bird.nom_scientifique}</p>
+                </article>
+              )
+            })}
           </div>
         )}
       </section>
