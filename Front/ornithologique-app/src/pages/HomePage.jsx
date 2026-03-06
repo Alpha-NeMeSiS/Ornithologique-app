@@ -49,7 +49,7 @@ function HomePage() {
         </div>
         <div className="hero-image">
           <img
-            src={featuredBirds?.[0]?.images?.[0]?.chemin_image ? `http://localhost:5000${featuredBirds?.[0]?.images?.[0]?.chemin_image}` : fallback}
+            src='https://www.lille.fr/var/www/storage/images/mediatheque/mairie-de-lille/mini-sites/mini-site-nature/images/martin-pecheur/2720402-1-fre-FR/Martin-pecheur.jpg'
             alt={featuredBirds?.[0]?.nom_commun || 'Oiseau'}
           />
         </div>
