@@ -27,7 +27,17 @@ def get_species_list():
             query = query.join(Taxonomie).filter(Taxonomie.famille == family)
 
         species = query.order_by(Espece.id_espece.asc()).all()
-        return jsonify([item.to_dict() for item in species]), 200
+
+        species_payload = []
+        for item in species:
+            species_data = item.to_dict()
+            species_data['images'] = [
+                {'chemin_image': image.chemin_image}
+                for image in Image.query.filter_by(id_espece=item.id_espece).order_by(Image.id_image.asc()).all()
+            ]
+            species_payload.append(species_data)
+
+        return jsonify(species_payload), 200
     except Exception as error:
         print('API ERROR /api/species:', error)
         return jsonify({'message': 'Erreur base de données sur la liste des espèces.', 'detail': str(error)}), 500

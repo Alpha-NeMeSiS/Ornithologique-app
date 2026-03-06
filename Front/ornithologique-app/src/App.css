@@ -166,18 +166,36 @@
   font-size: 38px;
 }
 
-.featured-grid,
-.species-grid {
+.featured-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+}
+
+.species-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  align-items: start;
 }
 
 .bird-card,
 .species-card {
   background: #ffffff;
   border-radius: 12px;
+}
+
+.bird-card {
   padding: 10px;
+}
+
+.species-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #dfe5e8;
+  height: 100%;
 }
 
 .bird-card img {
@@ -187,14 +205,54 @@
   object-fit: cover;
 }
 
-.bird-card h3,
-.species-card h3 {
+.bird-card h3 {
   margin: 8px 0 4px;
 }
 
-.bird-card p,
-.species-card p {
+.bird-card p {
   margin: 0;
+  color: #647a88;
+}
+
+.species-card-image {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  background: #dfe5e8;
+}
+
+.species-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.species-card-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  text-align: center;
+  color: #5d6c75;
+  font-weight: 600;
+}
+
+.species-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  flex: 1;
+}
+
+.species-card-body h3,
+.species-card-body p {
+  margin: 0;
+}
+
+.species-card-body p {
   color: #647a88;
 }
 
@@ -219,19 +277,8 @@
   color: #1d2433;
 }
 
-.photo-placeholder {
-  height: 150px;
-  border-radius: 10px;
-  background: linear-gradient(140deg, #123643, #5f7f2f);
-  color: #ffffff;
-  display: grid;
-  place-items: center;
-  margin-bottom: 10px;
-}
-
 .full-width {
   width: 100%;
-  margin-top: 10px;
 }
 
 .info-message {
@@ -253,23 +300,15 @@
   position: relative;
   margin-bottom: 20px;
   border-radius: 12px;
-  overflow: hidden;
-  background: #dbe2e7;
-}
-
-.detail-hero img,
-.image-fallback {
   width: 100%;
-  min-height: 260px;
   height: 360px;
-  object-fit: cover;
+  overflow: hidden;
 }
 
-.image-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #51606b;
+.detail-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .overlay {
@@ -544,8 +583,7 @@ th {
     grid-template-columns: 1fr;
   }
 
-  .detail-hero img,
-  .image-fallback {
+  .detail-hero {
     height: 240px;
   }
 }
