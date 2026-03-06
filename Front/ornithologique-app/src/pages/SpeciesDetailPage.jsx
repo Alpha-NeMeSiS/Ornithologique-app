@@ -99,10 +99,14 @@ function SpeciesDetailPage() {
   return (
     <section className="page-container standard-page species-detail-page">
       <div className="detail-hero">
-        <img
-          src={species.images?.[0]?.chemin_image ? `http://localhost:5000${species.images?.[0]?.chemin_image}` : fallback}
-          alt={species.nom_commun}
-        />
+        {(images.length > 0 ? images : [{ chemin_image: fallback }]).map((birdImage) => (
+          <img
+            key={birdImage.chemin_image}
+            src={birdImage.chemin_image === fallback ? fallback : `http://localhost:5000${birdImage.chemin_image}`}
+            alt="oiseau"
+            className="gallery-item"
+          />
+        ))}
         <div className="overlay">
           <h1>{species.nom_commun}</h1>
           <p>{species.nom_scientifique}</p>
