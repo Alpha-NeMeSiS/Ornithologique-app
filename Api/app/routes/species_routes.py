@@ -44,7 +44,13 @@ def get_species_detail(species_id):
     if species is None:
         return jsonify({'message': 'Espèce introuvable'}), 404
 
-    return jsonify(species.to_dict()), 200
+    species_data = species.to_dict()
+    species_data['images'] = [
+        {'chemin_image': image.chemin_image}
+        for image in Image.query.filter_by(id_espece=species_id).order_by(Image.id_image.asc()).all()
+    ]
+
+    return jsonify(species_data), 200
 
 
 @species_bp.post('')

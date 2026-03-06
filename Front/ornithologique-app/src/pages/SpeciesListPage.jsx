@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getSpecies } from '../services/api'
+import { buildImageUrl, getFallbackImage, getSpecies } from '../services/api'
 
 function SpeciesListPage() {
   const [speciesList, setSpeciesList] = useState([])
@@ -83,9 +83,15 @@ function SpeciesListPage() {
 
       {!loading && !error && speciesList.length > 0 && (
         <div className="species-grid">
-          {speciesList.map((bird, index) => (
+          {speciesList.map((bird) => {
+            const fallback = getFallbackImage()
+            const mainImage = bird.images?.[0]?.chemin_image || fallback
+
+            return (
             <article key={bird.id_espece} className="species-card">
-              <div className="photo-placeholder">Photo {index + 1}</div>
+              <div className="photo-placeholder">
+                <img src={buildImageUrl(mainImage)} alt={bird.nom_commun} />
+              </div>
               <h3>{bird.nom_commun}</h3>
               <p>{bird.nom_scientifique}</p>
               <button
@@ -96,7 +102,8 @@ function SpeciesListPage() {
                 Voir fiche
               </button>
             </article>
-          ))}
+            )
+          })}
         </div>
       )}
     </section>

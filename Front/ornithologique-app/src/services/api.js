@@ -1,5 +1,6 @@
 const API_BASE_URL = '/api'
 const API_SERVER_URL = 'http://localhost:5000'
+const FALLBACK_IMAGE = '/placeholder-bird.jpg'
 
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, options)
@@ -61,9 +62,13 @@ export function uploadSpeciesImage(speciesId, file) {
 }
 
 export function buildImageUrl(imagePath) {
-  if (!imagePath) return ''
+  if (!imagePath) return FALLBACK_IMAGE
   if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
     return imagePath
+  }
+
+  if (imagePath === FALLBACK_IMAGE) {
+    return FALLBACK_IMAGE
   }
 
   return `${API_SERVER_URL}${imagePath}`
@@ -85,4 +90,8 @@ export function createImage(imageData) {
     },
     body: JSON.stringify(imageData),
   })
+}
+
+export function getFallbackImage() {
+  return FALLBACK_IMAGE
 }

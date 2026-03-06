@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { buildImageUrl, getSpeciesById, uploadSpeciesImage } from '../services/api'
+import { buildImageUrl, getFallbackImage, getSpeciesById, uploadSpeciesImage } from '../services/api'
 
 function formatWeight(minWeight, maxWeight) {
   if (!minWeight && !maxWeight) return 'Non renseigné'
@@ -93,35 +93,30 @@ function SpeciesDetailPage() {
   }
 
   const images = species.images || []
-  const mainImage = images[0]?.chemin_image
+  const heroImage = species.images?.[0]?.chemin_image
+  const fallback = getFallbackImage()
   const countries = species.pays || []
 
   return (
     <section className="page-container standard-page species-detail-page">
       <div className="detail-hero">
-        {mainImage ? (
-          <img src={buildImageUrl(mainImage)} alt={species.nom_commun} />
-        ) : (
-          <div className="image-fallback">Image indisponible</div>
-        )}
+        <img src={buildImageUrl(heroImage || fallback)} alt={species.nom_commun} />
         <div className="overlay">
           <h1>{species.nom_commun}</h1>
           <p>{species.nom_scientifique}</p>
         </div>
       </div>
 
-      {images.length > 1 && (
-        <div className="gallery-grid">
-          {images.slice(1).map((birdImage) => (
-            <img
-              key={birdImage.id_image}
-              src={buildImageUrl(birdImage.chemin_image)}
-              alt={birdImage.description_image || species.nom_commun}
-              className="gallery-item"
-            />
-          ))}
-        </div>
-      )}
+      <div className="gallery-grid">
+        {(images.length > 0 ? images : [{ chemin_image: fallback }]).map((birdImage) => (
+          <img
+            key={birdImage.chemin_image}
+            src={buildImageUrl(birdImage.chemin_image)}
+            alt="oiseau"
+            className="gallery-item"
+          />
+        ))}
+      </div>
 
       <div className="detail-layout">
         <div>
