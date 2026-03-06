@@ -18,8 +18,21 @@ async function request(path, options = {}) {
   return data
 }
 
-export function getSpecies() {
-  return request('/species')
+export function getSpecies(filters = {}) {
+  const params = new URLSearchParams()
+
+  if (filters.search) {
+    params.set('search', filters.search)
+  }
+
+  if (filters.family) {
+    params.set('family', filters.family)
+  }
+
+  const query = params.toString()
+  const path = query ? `/species?${query}` : '/species'
+
+  return request(path)
 }
 
 export function getSpeciesById(id) {

@@ -9,7 +9,18 @@ species_bp = Blueprint('species', __name__, url_prefix='/api/species')
 @species_bp.get('')
 def get_species_list():
     try:
-        species = Espece.query.order_by(Espece.id_espece.asc()).all()
+        search = request.args.get('search', type=str)
+        family = request.args.get('family', type=str)
+
+        query = Espece.query
+
+        if search:
+            query = query.filter(Espece.nom_commun.ilike(f'%{search}%'))
+
+        if family and family != 'all':
+            query = query.join(Taxonomie).filter(Taxonomie.famille == family)
+
+        species = query.order_by(Espece.id_espece.asc()).all()
         return jsonify([item.to_dict() for item in species]), 200
     except Exception as error:
         print("API ERROR /api/species:", error)
